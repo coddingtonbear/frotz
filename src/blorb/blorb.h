@@ -24,6 +24,9 @@ typedef unsigned int  uint32;
 #else
 typedef unsigned long  uint32;
 #endif
+#ifdef __clang__
+typedef unsigned long int ulong;
+#endif
 
 typedef unsigned short uint16;
 
