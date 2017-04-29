@@ -761,14 +761,20 @@ void z_restore (void)
 		    || h_screen_cols != old_screen_cols))
 		    erase_window (1);
 	    }
-	} else
+	} else if (!f_setup.automatic_mode) {
 	    os_fatal ("Error reading save file");
+        }
     }
 
 finished:
 
-    if (gfp == NULL && f_setup.restore_mode)
-	os_fatal ("Error reading save file");
+    if (gfp == NULL && f_setup.restore_mode) {
+	if(f_setup.automatic_mode) {
+		return;
+	} else {
+		os_fatal ("Error reading save file");
+	}
+    }
 
     if (h_version <= V3)
 	branch (success);

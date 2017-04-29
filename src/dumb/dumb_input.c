@@ -83,8 +83,8 @@ static int xgetchar(void)
     int c = getchar();
     if (c == EOF) {
 	if (feof(stdin)) {
-	    fprintf(stderr, "\nEOT\n");
-	    exit(0);
+        fprintf(stderr, "\nEOT\n");
+        exit(0);
 	}
 	os_fatal(strerror(errno));
     }
@@ -409,7 +409,7 @@ int os_read_file_name (char *file_name, const char *default_name, int flag)
   /* If we're restoring a game before the interpreter starts,
    * our filename is already provided.  Just go ahead silently.
    */
-  if (f_setup.restore_mode) {
+  if (f_setup.restore_mode || f_setup.automatic_mode) {
     strcpy(file_name, default_name);
     return TRUE;
   } else {

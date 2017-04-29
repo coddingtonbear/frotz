@@ -466,7 +466,9 @@ bool dumb_output_handle_setting(const char *setting, bool show_cursor,
 
     if (!strncmp(setting, "pb", 2)) {
 	toggle(&show_pictures, setting[2]);
-	printf("Picture outlines display %s\n", show_pictures ? "ON" : "OFF");
+        if(! f_setup.automatic_mode) {
+	    printf("Picture outlines display %s\n", show_pictures ? "ON" : "OFF");
+        }
 	if (startup)
 	    return TRUE;
 	for (i = 0; i < screen_cells; i++)
@@ -474,14 +476,20 @@ bool dumb_output_handle_setting(const char *setting, bool show_cursor,
 	dumb_show_screen(show_cursor);
     } else if (!strncmp(setting, "vb", 2)) {
 	toggle(&visual_bell, setting[2]);
-	printf("Visual bell %s\n", visual_bell ? "ON" : "OFF");
+        if(! f_setup.automatic_mode) {
+	    printf("Visual bell %s\n", visual_bell ? "ON" : "OFF");
+        }
 	os_beep(1); os_beep(2);
     } else if (!strncmp(setting, "ln", 2)) {
 	toggle(&show_line_numbers, setting[2]);
-	printf("Line numbering %s\n", show_line_numbers ? "ON" : "OFF");
+        if(! f_setup.automatic_mode) {
+	    printf("Line numbering %s\n", show_line_numbers ? "ON" : "OFF");
+        }
     } else if (!strncmp(setting, "lt", 2)) {
 	toggle(&show_line_types, setting[2]);
-	printf("Line-type display %s\n", show_line_types ? "ON" : "OFF");
+        if(! f_setup.automatic_mode) {
+	    printf("Line-type display %s\n", show_line_types ? "ON" : "OFF");
+        }
 
     } else if (*setting == 'c') {
 	switch (setting[1]) {
@@ -491,8 +499,10 @@ bool dumb_output_handle_setting(const char *setting, bool show_cursor,
 	case 'h': hide_lines = atoi(&setting[2]); break;
 	default: return FALSE;
 	}
-	printf("Compression mode %s, hiding top %d lines\n",
+        if(! f_setup.automatic_mode) {
+	    printf("Compression mode %s, hiding top %d lines\n",
 	    compression_names[compression_mode], hide_lines);
+        }
     } else if (*setting == 'r') {
 	switch (setting[1]) {
 	case 'n': rv_mode = RV_NONE; break;
@@ -502,29 +512,33 @@ bool dumb_output_handle_setting(const char *setting, bool show_cursor,
 	case 'b': rv_blank_char = setting[2] ? setting[2] : ' '; break;
 	default: return FALSE;
 	}
-	printf("Reverse-video mode %s, blanks reverse to '%c': ",
+        if(! f_setup.automatic_mode) {
+	    printf("Reverse-video mode %s, blanks reverse to '%c': ",
 	    rv_names[rv_mode], rv_blank_char);
+            for (p = "sample reverse text"; *p; p++)
+                show_cell(make_cell(REVERSE_STYLE, *p));
+            putchar('\n');
+        }
 
-	for (p = "sample reverse text"; *p; p++)
-	    show_cell(make_cell(REVERSE_STYLE, *p));
-	putchar('\n');
 	for (i = 0; i < screen_cells; i++)
 	    screen_changes[i] = (cell_style(screen_data[i]) == REVERSE_STYLE);
 	dumb_show_screen(show_cursor);
     } else if (!strcmp(setting, "set")) {
 
-	printf("Compression Mode %s, hiding top %d lines\n",
-	    compression_names[compression_mode], hide_lines);
-	printf("Picture Boxes display %s\n", show_pictures ? "ON" : "OFF");
-	printf("Visual Bell %s\n", visual_bell ? "ON" : "OFF");
-	os_beep(1); os_beep(2);
-	printf("Line Numbering %s\n", show_line_numbers ? "ON" : "OFF");
-	printf("Line-Type display %s\n", show_line_types ? "ON" : "OFF");
-	printf("Reverse-Video mode %s, Blanks reverse to '%c': ",
-	    rv_names[rv_mode], rv_blank_char);
-	for (p = "sample reverse text"; *p; p++)
-	    show_cell(make_cell(REVERSE_STYLE, *p));
-	putchar('\n');
+        if(! f_setup.automatic_mode) {
+            printf("Compression Mode %s, hiding top %d lines\n",
+                compression_names[compression_mode], hide_lines);
+            printf("Picture Boxes display %s\n", show_pictures ? "ON" : "OFF");
+            printf("Visual Bell %s\n", visual_bell ? "ON" : "OFF");
+            os_beep(1); os_beep(2);
+            printf("Line Numbering %s\n", show_line_numbers ? "ON" : "OFF");
+            printf("Line-Type display %s\n", show_line_types ? "ON" : "OFF");
+            printf("Reverse-Video mode %s, Blanks reverse to '%c': ",
+                rv_names[rv_mode], rv_blank_char);
+            for (p = "sample reverse text"; *p; p++)
+                show_cell(make_cell(REVERSE_STYLE, *p));
+            putchar('\n');
+        }
     } else
 	return FALSE;
     return TRUE;

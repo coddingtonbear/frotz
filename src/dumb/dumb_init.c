@@ -40,7 +40,7 @@ Syntax: dfrotz [options] story-file\n\
   -o   watch object movement     \t -v show version information\n\
   -O   watch object locating     \t -w # screen width\n\
   -p   plain ASCII output only   \t -x   expand abbreviations g/x/z\n\
-  -P   alter piracy opcode \n\
+  -P   alter piracy opcode       \t -J automatic mode (Experimental)\n\
   -r xxx set runtime option \\xxx before starting (can be used repeatedly)\n"
 
 /* A unix-like getopt, but with the names changed to avoid any problems.  */
@@ -95,7 +95,7 @@ void os_process_arguments(int argc, char *argv[])
     do_more_prompts = TRUE;
     /* Parse the options */
     do {
-	c = zgetopt(argc, argv, "-aAh:iI:moOpPs:r:R:S:tu:vw:xZ:");
+	c = zgetopt(argc, argv, "-aAh:iI:moOpPs:r:R:JS:tu:vw:xZ:");
 	switch(c) {
 	  case 'a': f_setup.attribute_assignment = 1; break;
 	  case 'A': f_setup.attribute_testing = 1; break;
@@ -110,6 +110,7 @@ void os_process_arguments(int argc, char *argv[])
 	case 'R': f_setup.restore_mode = 1;
 		  f_setup.tmp_save_name = my_strdup(zoptarg);
 		  break;
+        case 'J': f_setup.automatic_mode = 1; break;
 	case 'r': dumb_handle_setting(zoptarg, FALSE, TRUE); break;
 	case 's': user_random_seed = atoi(zoptarg); break;
 	  case 'S': f_setup.script_cols = atoi(zoptarg); break;
@@ -273,6 +274,7 @@ void os_init_setup(void)
 	f_setup.sound = 1;
 	f_setup.err_report_mode = ERR_DEFAULT_REPORT_MODE;
 	f_setup.restore_mode = 0;
+        f_setup.automatic_mode = 0;
 
 }
 
